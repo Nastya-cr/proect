@@ -8,15 +8,14 @@ class Advertisement(models.Model):
     price= models.DecimalField('цена', max_digits=10, decimal_places=2)
    
     
-    #auction= models.BooleanField('торг', help_text='отметьте,уместен ли торг')
+    auction= models.BooleanField('торг', help_text='отметьте,уместен ли торг')
     created_at= models.DateTimeField(auto_now_add=True)
 
     updated_at= models.DateTimeField(auto_now=True)
 
-    
-    class Meta:
-        db_table = "advertisement"
-    
-    
-    def __str__(self):
-        return f"Advertisement(id={self.pk}, title={self.title}, price={self.price})"
+    def created_date(self):
+        from django.utils import timezone
+        if self.created_at == timezone.now().date():
+            created_date = self.created_at.strftime("%H:%M:%S")
+            return format.html('<span>сегодня в {} </span>', created_date)
+        return self.created_at.srtftime("%d.%m.%Y в %H:%M:%S")
