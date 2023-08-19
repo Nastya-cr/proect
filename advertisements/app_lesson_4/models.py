@@ -19,3 +19,11 @@ class Advertisement(models.Model):
             created_date = self.created_at.strftime("%H:%M:%S")
             return format.html('<span>сегодня в {} </span>', created_date)
         return self.created_at.srtftime("%d.%m.%Y в %H:%M:%S")
+    
+    
+    def get_html_image(self):
+        if self.image:
+            return format_html(
+                'img scr="()" style="max_widh:80px; vax_height:80px"'
+                self.image.url
+            )
