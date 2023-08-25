@@ -1,5 +1,45 @@
 from django.db import models
+from .models import YourModel
 
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+
+
+def registration_view(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = CustomUserCreationForm()
+
+    return render(request, 'registration.html', {'form': form})
+
+class YourModelForm(forms.ModelForm):
+    class Meta:
+        model = YourModel
+        fields = '__all__' 
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'your-css-class'}) 
+
+   
+    def clean_title(self):
+        title = self.cleaned_data.get('title')
+        if title.startswith('?'):
+            raise forms.ValidationError("Заголовок не может начинаться с вопросительного знака")
+        return title
 class Advertisement(models.Model):
     title= models.CharField('заголовок', max_length=128)
     
